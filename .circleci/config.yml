@@ -13,8 +13,8 @@ jobs:
       - run: echo "default job!!"
 
 workflows:
-  when:
-    equel: [<<pipeline.git.branch>>, main]
   default:
+    when:
+      equals: [ <<pipeline.git.branch>>, main ]
     jobs:
       - default
