@@ -1,0 +1,27 @@
+version: 2.1
+
+orbs:
+  continuation: circleci/continuation@1.0.0
+  path-filtering: circleci/path-filtering@1.1.0
+
+parameters:
+  env:
+    type: enum
+    enum: [dev, prod]
+    default: dev
+
+executors:
+  default:
+    docker:
+      - image: cimg/base:stable
+
+jobs:
+  default:
+    executor: default
+    steps:
+      - run: echo "project a job!!"
+
+workflows:
+  default:
+    jobs:
+      - default

@@ -1,9 +1,10 @@
 version: 2.1
 
-setup: true
-
-orbs:
-  continuation: circleci/continuation@1.0.0
+parameters:
+  env:
+    type: enum
+    enum: [dev, prod]
+    default: dev
 
 executors:
   default:
@@ -11,17 +12,33 @@ executors:
       - image: cimg/base:stable
 
 jobs:
-  default:
+  nightly:
     executor: default
     steps:
       - checkout
-      - run: echo "main default job!!"
+      - run: echo "nightly build"
+  prja:
+    executor: default
+    steps:
+      - checkout
+      - run: echo "prja's pr and merge test"
 
 workflows:
-  default:
-    when:
-      equals: [ <<pipeline.git.branch>>, main ]
+  nightly:
+    triggers:
+      - schedule:
+          cron: "* * * * *"
+          filters:
+            branches:
+              only:
+                - main
     jobs:
-      - default
-      - continuation/continue:
-          configuration_path: .circleci/default.yml
+      - nightly
+
+  prja:
+    jobs:
+      - prja:
+          filters:
+            paths:
+              only:
+                - main

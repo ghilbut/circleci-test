@@ -10,7 +10,7 @@ jobs:
     executor: default
     steps:
       - checkout
-      - run: echo "default job!!"
+      - run: echo "base job!!"
 
 workflows:
   default:
