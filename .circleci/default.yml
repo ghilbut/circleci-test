@@ -1,0 +1,18 @@
+version: 2.1
+
+executors:
+  default:
+    docker:
+      - image: cimg/base:stable
+
+jobs:
+  default:
+    executor: default
+    steps:
+      - checkout
+      - run: echo "default job!!"
+
+workflows:
+  default:
+    jobs:
+      - default

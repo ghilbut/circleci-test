@@ -1,5 +1,10 @@
 version: 2.1
 
+setup: true
+
+orbs:
+  continuation: circleci/continuation@1.0.0
+
 executors:
   default:
     docker:
@@ -10,7 +15,7 @@ jobs:
     executor: default
     steps:
       - checkout
-      - run: echo "default job!!"
+      - run: echo "main default job!!"
 
 workflows:
   default:
@@ -18,3 +23,5 @@ workflows:
       equals: [ <<pipeline.git.branch>>, main ]
     jobs:
       - default
+      - continuation/continue:
+          configuration_path: .circleci/default.yml
