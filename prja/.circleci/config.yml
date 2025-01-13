@@ -1,9 +1,5 @@
 version: 2.1
 
-orbs:
-  continuation: circleci/continuation@1.0.0
-  path-filtering: circleci/path-filtering@1.1.0
-
 parameters:
   env:
     type: enum

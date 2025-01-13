@@ -1,6 +1,19 @@
 version: 2.1
 
+setup: true
+
+orbs:
+  continuation: circleci/continuation@1.0.0
+  path-filtering: circleci/path-filtering@1.1.0
+
 parameters:
+  trigger:
+    type: enum
+    enum: [ default,
+            sonar, test, core, portal, deployment, cost, action, validator,
+            svc, cmdb, wasm, widp, base, echo, prometheus-bundle-image,
+            istio, kiali, bazel, lambda ]
+    default: default
   env:
     type: enum
     enum: [dev, prod]
@@ -12,33 +25,31 @@ executors:
       - image: cimg/base:stable
 
 jobs:
-  nightly:
+  build-verification:
     executor: default
     steps:
-      - checkout
-      - run: echo "nightly build"
-  prja:
+        - run: echo "run build-verification"
+  sonarqube:
     executor: default
     steps:
-      - checkout
-      - run: echo "prja's pr and merge test"
+      - run: echo "run sonarqube"
+  securityscan:
+    executor: default
+    steps:
+      - run: echo "run securityscan"
+
 
 workflows:
-  nightly:
-    triggers:
-      - schedule:
-          cron: "* * * * *"
-          filters:
-            branches:
-              only:
-                - main
+  main:
     jobs:
-      - nightly
 
-  prja:
-    jobs:
-      - prja:
-          filters:
-            paths:
-              only:
-                - main
+      - path-filtering/filter:
+          base-revision: main
+          mapping: |
+            prja/.* env "dev" prja/.circleci/config.yml
+      - continuation/continue:
+          configuration_path: .circleci/base.yml
+          parameters: |
+            {
+              "trigger": "<<pipeline.parameters.trigger>>"
+            }

@@ -1,5 +1,10 @@
 version: 2.1
 
+parameters:
+  trigger:
+    type: string
+    default: default
+
 executors:
   default:
     docker:
@@ -9,10 +14,26 @@ jobs:
   default:
     executor: default
     steps:
-      - checkout
       - run: echo "base job!!"
+  build-verification:
+    executor: default
+    steps:
+      - run: echo "run build-verification"
+  sonarqube:
+    executor: default
+    steps:
+      - run: echo "run sonarqube"
+  securityscan:
+    executor: default
+    steps:
+      - run: echo "run securityscan"
 
 workflows:
-  default:
+  base:
+    when:
+      equal: [ <<pipeline.parameters.trigger>>, default ]
     jobs:
       - default
+      - build-verification
+      - sonarqube
+      - securityscan
