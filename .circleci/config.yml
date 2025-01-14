@@ -1,6 +1,6 @@
 version: 2.1
 
-setup: true
+setup: << pipeline.parameters.run-setup >>
 
 orbs:
   continuation: circleci/continuation@1.0.0
@@ -25,6 +25,10 @@ executors:
       - image: cimg/base:stable
 
 jobs:
+  check-run-setup:
+    executor: default
+    steps:
+      - run: echo "run check-run-setup"
   build-verification:
     executor: default
     steps:
@@ -42,14 +46,14 @@ jobs:
 workflows:
   main:
     jobs:
-
-      - path-filtering/filter:
-          base-revision: main
-          mapping: |
-            prja/.* env "dev" prja/.circleci/config.yml
-      - continuation/continue:
-          configuration_path: .circleci/base.yml
-          parameters: |
-            {
-              "trigger": "<<pipeline.parameters.trigger>>"
-            }
+      - check-run-setup
+      # - continuation/continue:
+      #     configuration_path: .circleci/base.yml
+      #     parameters: |
+      #       {
+      #         "trigger": "<<pipeline.parameters.trigger>>"
+      #       }
+      # - path-filtering/filter:
+      #     base-revision: main
+      #     mapping: |
+      #       prja/.* env "dev" prja/.circleci/config.yml
